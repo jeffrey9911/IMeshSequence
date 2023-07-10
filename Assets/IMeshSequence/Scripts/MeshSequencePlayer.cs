@@ -12,12 +12,19 @@ public class MeshSequencePlayer : MonoBehaviour
 
     private float FrameTimer = 0;
 
-    private MeshSequenceLoader Loader;
+    private List<GameObject> ObjectSequence = new List<GameObject>();
 
     private void Start()
     {
-        Loader = GetComponent<MeshSequenceLoader>();
-        Loader.DeactiveAll();
+        foreach(Transform child in this.transform)
+        {
+            ObjectSequence.Add(child.gameObject);
+        }
+
+        foreach(GameObject obj in ObjectSequence)
+        {
+            obj.SetActive(false);
+        }
     }
 
     private void Update()
@@ -37,10 +44,10 @@ public class MeshSequencePlayer : MonoBehaviour
 
     private void SwapFrame()
     {
-        int NextFrame = (CurrentFrame + 1) >= Loader.Frames ? 0 : CurrentFrame + 1;
+        int NextFrame = (CurrentFrame + 1) >= ObjectSequence.Count ? 0 : CurrentFrame + 1;
 
-        Loader.ObjectSequence[CurrentFrame].SetActive(false);
-        Loader.ObjectSequence[NextFrame].SetActive(true);
+        ObjectSequence[CurrentFrame].SetActive(false);
+        ObjectSequence[NextFrame].SetActive(true);
 
         CurrentFrame = NextFrame;
     }
