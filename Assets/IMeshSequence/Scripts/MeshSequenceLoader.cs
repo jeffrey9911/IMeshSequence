@@ -17,7 +17,7 @@ public class MeshSequenceLoader : MonoBehaviour
     [SerializeField] [HideInInspector] public string ExampleMaterialName;
     [SerializeField] [HideInInspector] public List<Material> MaterialSequence = new List<Material>();
 
-    [ContextMenu("LoadMeshSequence")]
+    [ContextMenu("Load Mesh Sequence")]
     public void LoadMeshSequence()
     {
         int IndexDigits = 0;
@@ -111,6 +111,18 @@ public class MeshSequenceLoader : MonoBehaviour
         {
             SwapAllMaterial(parent.GetChild(i), material);
         }
+    }
+
+    [ContextMenu("Apply Offset")]
+    public void ApplyOffset()
+    {
+        for(int i = 0; i < ObjectSequence.Count; i++)
+        {
+            Vector3 offsetPos = ObjectSequence[0].transform.localPosition;
+            ObjectSequence[i].transform.localPosition = offsetPos;
+        }
+
+        Debug.Log("Offset Applied");
     }
 
 }
