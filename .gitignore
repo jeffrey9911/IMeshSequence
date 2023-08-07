@@ -61,3 +61,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# i Mesh Sequence
+/Assets/Resources/IMeshSequence/
+/Assets/Resources/IMeshSequence/*.meta
