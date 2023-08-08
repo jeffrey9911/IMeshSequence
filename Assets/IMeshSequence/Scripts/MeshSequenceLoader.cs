@@ -23,6 +23,7 @@ public class MeshSequenceLoader : MonoBehaviour
     [ContextMenu("Load Mesh Sequence")]
     public void LoadMeshSequence()
     {
+#if UNITY_EDITOR
         if(ExampleMesh != null)
         {
             ExampleMeshName = ExampleMesh.name;
@@ -113,6 +114,7 @@ public class MeshSequenceLoader : MonoBehaviour
         }
 
         Debug.Log("Mesh Sequence Loaded!");
+#endif
     }
 
     public void DeactiveAll()

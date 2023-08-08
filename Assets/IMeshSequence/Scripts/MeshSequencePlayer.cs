@@ -54,11 +54,32 @@ public class MeshSequencePlayer : MonoBehaviour
             }
 
         }
+        else
+        {
+            if(Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                SwapFrame();
+            }
+            else if(Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                SwapFrame(true);
+            }
+        }
     }
 
-    private void SwapFrame()
+    private void SwapFrame(bool isReversing = false)
     {
-        int NextFrame = (CurrentFrame + 1) >= ObjectSequence.Count ? 0 : CurrentFrame + 1;
+        int NextFrame = 0;
+        if (isReversing)
+        {
+            NextFrame = (CurrentFrame - 1) < 0 ? ObjectSequence.Count - 1 : CurrentFrame - 1;
+        }
+        else
+        {
+            NextFrame = (CurrentFrame + 1) >= ObjectSequence.Count ? 0 : CurrentFrame + 1;
+        }
+
+        
 
         ObjectSequence[CurrentFrame].SetActive(false);
 
