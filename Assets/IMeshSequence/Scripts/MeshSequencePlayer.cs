@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class MeshSequencePlayer : MonoBehaviour
 {
+    public Vector3 PositionOffset = Vector3.zero;
+    public Vector3 RotationOffset = Vector3.zero;
+    public Vector3 ScaleOffset = Vector3.one;
+
     public float PlayerFramePerSecond = 30;
 
     public bool isPlaying = false;
@@ -23,9 +27,9 @@ public class MeshSequencePlayer : MonoBehaviour
 
     private int FrameCount = 0;
 
+
     private void Awake()
     {
-
         foreach (Transform child in this.transform)
         {
             child.gameObject.SetActive(false);
@@ -60,9 +64,9 @@ public class MeshSequencePlayer : MonoBehaviour
     {
         if (meshSequenceContainer != null)
         {
-            this.transform.position += meshSequenceContainer.PositionOffset;
-            this.transform.eulerAngles += meshSequenceContainer.RotationOffset;
-            this.transform.localScale = meshSequenceContainer.ScaleOffset;
+            this.transform.position += PositionOffset;
+            this.transform.eulerAngles += RotationOffset;
+            this.transform.localScale = ScaleOffset;
         }
 
         if (isPlayingAudio)
@@ -128,12 +132,9 @@ public class MeshSequencePlayer : MonoBehaviour
     [ContextMenu("Apply Player Transform Offset")]
     public void ApplyOffset()
     {
-        if (meshSequenceContainer == null) { meshSequenceContainer = this.GetComponent<MeshSequenceContainer>(); }
-
-        meshSequenceContainer.PositionOffset = this.transform.position;
-        meshSequenceContainer.RotationOffset = this.transform.eulerAngles;
-        meshSequenceContainer.ScaleOffset = this.transform.localScale;
-
+        PositionOffset = this.transform.position;
+        RotationOffset = this.transform.eulerAngles;
+        ScaleOffset = this.transform.localScale;
 
         Debug.Log("Offset Applied");
     }
