@@ -33,7 +33,7 @@ public class MeshSequencePlayer : MonoBehaviour
 
         meshSequenceContainer = this.GetComponent<MeshSequenceContainer>();
 
-        if(meshSequenceContainer == null)
+        if (meshSequenceContainer == null)
         {
             Debug.LogError("Please load mesh sequence first!");
             isPlaying = false;
@@ -44,12 +44,13 @@ public class MeshSequencePlayer : MonoBehaviour
         meshFilter = this.AddComponent<MeshFilter>();
         FrameCount = meshSequenceContainer.MeshSequence.Count;
 
-        if(isPlayingAudio)
+        if (isPlayingAudio)
         {
-            if(PlayerAudio != null)
+            if (PlayerAudio != null)
             {
                 PlayerAudioSource = this.gameObject.AddComponent<AudioSource>();
                 PlayerAudioSource.clip = PlayerAudio;
+                PlayerAudioSource.loop = true;
                 PlayerFramePerSecond = meshSequenceContainer.MeshSequence.Count / PlayerAudio.length;
             }
         }
@@ -64,7 +65,7 @@ public class MeshSequencePlayer : MonoBehaviour
             this.transform.localScale = meshSequenceContainer.ScaleOffset;
         }
 
-        if(isPlayingAudio)
+        if (isPlayingAudio)
         {
             PlayerAudioSource.Play();
         }
@@ -72,11 +73,11 @@ public class MeshSequencePlayer : MonoBehaviour
 
     private void Update()
     {
-        if(isPlaying)
+        if (isPlaying)
         {
             if (isPlayingAudio)
             {
-                if (Mathf.FloorToInt(PlayerAudioSource.time / PlayerAudio.length * (FrameCount - 1)) >= CurrentFrame)
+                if (Mathf.FloorToInt(PlayerAudioSource.time / PlayerAudio.length * (FrameCount - 1)) != CurrentFrame)
                 {
                     SwapFrame();
                 }
@@ -95,11 +96,11 @@ public class MeshSequencePlayer : MonoBehaviour
         }
         else
         {
-            if(Input.GetKeyDown(KeyCode.RightArrow))
+            if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 SwapFrame();
             }
-            else if(Input.GetKeyDown(KeyCode.LeftArrow))
+            else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 SwapFrame(true);
             }
@@ -120,11 +121,6 @@ public class MeshSequencePlayer : MonoBehaviour
 
         meshFilter.mesh = meshSequenceContainer.MeshSequence[NextFrame];
         meshRenderer.sharedMaterial = meshSequenceContainer.MeshRendererSequence[NextFrame].sharedMaterial;
-
-        if(CurrentFrame == 0 && isPlayingAudio)
-        {
-            PlayerAudioSource.Play();
-        }
 
         CurrentFrame = NextFrame;
     }
