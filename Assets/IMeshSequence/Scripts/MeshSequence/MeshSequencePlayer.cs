@@ -124,8 +124,9 @@ public class MeshSequencePlayer : MonoBehaviour
         }
 
         meshFilter.mesh = meshSequenceContainer.MeshSequence[NextFrame];
-        meshRenderer.sharedMaterial = meshSequenceContainer.MeshRendererSequence[NextFrame].sharedMaterial;
 
+        meshRenderer.sharedMaterial = meshSequenceContainer.MaterialSequence[NextFrame];
+        
         CurrentFrame = NextFrame;
     }
 

@@ -1,23 +1,73 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.IO;
+using Dummiesman;
 using UnityEditor;
 using UnityEngine;
 
 public class MeshSequenceLoader : MonoBehaviour
 {
-    private string FolderName;
-    private string FolderBasePath = "IMeshSequence/";
-
-    public GameObject ExampleMesh;
-    private string ExampleMeshName;
-
-    private int Frames;
+    [SerializeField] public string MeshSequenceFolder;
 
     private MeshSequenceContainer meshSequenceContainer;
 
-    private GameObject exampleObj;
+    public void LoadMeshSequenceByPath(string folderPath = "")
+    {
+        if(folderPath == "") { folderPath = MeshSequenceFolder; }
 
+        if(Directory.Exists(folderPath))
+        {
+            string[] objFiles = Directory.GetFiles(folderPath, "*.obj");
+
+            try
+            {
+                if(objFiles.Length > 0)
+                {
+                    meshSequenceContainer = this.gameObject.AddComponent<MeshSequenceContainer>();
+
+                    foreach (string objFile in objFiles)
+                    {
+                        GameObject loadedObject = new OBJLoader().Load(objFile);
+
+                        Mesh frameMesh = GetMesh(loadedObject.transform);
+                        if (frameMesh != null) { meshSequenceContainer.MeshSequence.Add(frameMesh); }
+
+                        MeshRenderer frameRenderer = GetMeshRenderer(loadedObject.transform);
+                        if (frameRenderer != null)
+                        {
+                            if(frameRenderer.sharedMaterials.Length > 0)
+                            {
+                                meshSequenceContainer.MaterialSequence.Add(frameRenderer.sharedMaterials[0]);
+                            }
+                        }
+
+                        DestroyImmediate(loadedObject);
+                    }
+
+                    this.gameObject.AddComponent<MeshSequencePlayer>();
+
+                    DestroyImmediate(this.gameObject.GetComponent<MeshSequenceLoader>());
+                }
+                else
+                {
+                    Debug.LogError("No .obj files found in folder!");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error loading .obj files: {e}");
+            }
+        }
+        else
+        {
+            Debug.LogError($"Folder doesn't exist! {folderPath}");
+        }
+    }
+
+
+/*
     [ContextMenu("Load Mesh Sequence")]
     public void LoadMeshSequence()
     {
@@ -64,7 +114,13 @@ public class MeshSequenceLoader : MonoBehaviour
             if (frameMesh != null) { meshSequenceContainer.MeshSequence.Add(frameMesh); }
 
             MeshRenderer frameRenderer = GetMeshRenderer(frame.transform);
-            if (frameRenderer != null) { meshSequenceContainer.MeshRendererSequence.Add(frameRenderer); }
+            if (frameRenderer != null)
+            { 
+                if(frameRenderer.sharedMaterials.Length > 0)
+                {
+                    meshSequenceContainer.MaterialSequence.Add(frameRenderer.sharedMaterials[0]);
+                }
+            }
         }
 
         exampleObj = Instantiate(ExampleMesh, this.transform);
@@ -77,15 +133,7 @@ public class MeshSequenceLoader : MonoBehaviour
         DestroyImmediate(this.gameObject.GetComponent<MeshSequenceLoader>());
 #endif
     }
-
-    [ContextMenu("Show Sequence Information")]
-    public void ShowSequenceInformation()
-    {
-        Debug.Log($"Folder Name: {FolderName}");
-        Debug.Log($"Example Mesh Name: {ExampleMeshName}");
-        Debug.Log($"Base path: {FolderBasePath}");
-        Debug.Log($"Frames: {Frames}");
-    }
+*/
 
     private MeshRenderer GetMeshRenderer(Transform parent)
     {
