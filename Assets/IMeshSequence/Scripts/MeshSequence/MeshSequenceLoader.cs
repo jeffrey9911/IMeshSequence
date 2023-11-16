@@ -39,7 +39,7 @@ public class MeshSequenceLoader : MonoBehaviour
                         {
                             if(frameRenderer.sharedMaterials.Length > 0)
                             {
-                                meshSequenceContainer.MaterialSequence.Add(frameRenderer.sharedMaterials[0]);
+                                //meshSequenceContainer.MaterialSequence.Add(frameRenderer.sharedMaterials[0]);
                             }
                         }
 
@@ -47,6 +47,9 @@ public class MeshSequenceLoader : MonoBehaviour
                     }
 
                     this.gameObject.AddComponent<MeshSequencePlayer>();
+                    this.gameObject.AddComponent<MeshFilter>();
+                    this.gameObject.AddComponent<MeshRenderer>();
+
 
                     DestroyImmediate(this.gameObject.GetComponent<MeshSequenceLoader>());
                 }

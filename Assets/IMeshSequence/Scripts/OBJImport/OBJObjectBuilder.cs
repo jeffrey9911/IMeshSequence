@@ -12,7 +12,6 @@
  * all copies or substantial portions of the Software.
 */
 
-using Dummiesman;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -123,7 +122,74 @@ public class OBJObjectBuilder {
 		return go;
 	}
 
-    public void SetMaterial(string name) {
+
+        public Material[] BuildMaterial()
+        {
+            int submesh = 0;
+
+            //locate the material for each submesh
+            Material[] materialArray = new Material[_materialIndices.Count];
+            foreach (var kvp in _materialIndices)
+            {
+                Material material = null;
+                if (_loader.Materials == null)
+                {
+                    material = OBJLoaderHelper.CreateNullMaterial();
+                    material.name = kvp.Key;
+                }
+                else
+                {
+                    if (!_loader.Materials.TryGetValue(kvp.Key, out material))
+                    {
+                        material = OBJLoaderHelper.CreateNullMaterial();
+                        material.name = kvp.Key;
+                        _loader.Materials[kvp.Key] = material;
+                    }
+                }
+                materialArray[submesh] = material;
+                submesh++;
+            }
+
+            return materialArray;
+        }
+
+
+
+        public Mesh BuildMesh()
+        {
+            int submesh = 0;
+
+            var msh = new Mesh()
+            {
+                name = _name,
+                indexFormat = (_vertices.Count > 65535) ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16,
+                subMeshCount = _materialIndices.Count
+            };
+
+            //set vertex data
+            msh.SetVertices(_vertices);
+            msh.SetNormals(_normals);
+            msh.SetUVs(0, _uvs);
+
+            //set faces
+            foreach (var kvp in _materialIndices)
+            {
+                msh.SetTriangles(kvp.Value, submesh);
+                submesh++;
+            }
+
+            //recalculations
+            if (recalculateNormals)
+                msh.RecalculateNormals();
+            msh.RecalculateTangents();
+            msh.RecalculateBounds();
+
+            return msh;
+        }
+
+
+
+        public void SetMaterial(string name) {
 		if (!_materialIndices.TryGetValue(name, out _currentIndexList))
 		{
 			_currentIndexList = new List<int>();

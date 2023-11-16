@@ -44,6 +44,48 @@ public class IMeshSequenceLoaderEditorManager : Editor
 }
 
 
+
+
+[CustomEditor(typeof(MeshSequenceStreamer))]
+public class IMeshSequenceStreamerEditorManager : Editor
+{
+
+    SerializedProperty meshSequencePath;
+    MeshSequenceStreamer meshSequenceStreamer;
+
+    private void OnEnable()
+    {
+        meshSequencePath = serializedObject.FindProperty("MeshSequencePath");
+
+        meshSequenceStreamer = (MeshSequenceStreamer)target;
+
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
+
+        DrawDefaultInspector();
+
+        if (GUILayout.Button("Load Sequence Folder Path"))
+        {
+            string path = EditorUtility.OpenFolderPanel("Open a folder that contains a Geometry Sequence (.obj)", meshSequenceStreamer.MeshSequencePath, "");
+            meshSequencePath.stringValue = path;
+        }
+
+        if (GUILayout.Button("Load Sequenced Mesh"))
+        {
+            meshSequenceStreamer.StartLoad();
+        }
+
+        serializedObject.ApplyModifiedProperties();
+    }
+}
+
+
+
+
 [CustomEditor(typeof(MeshSequencePlayer))]
 public class IMeshSequencePlayerEditorManager : Editor
 {

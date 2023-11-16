@@ -44,8 +44,8 @@ public class MeshSequencePlayer : MonoBehaviour
             return;
         }
 
-        meshRenderer = this.AddComponent<MeshRenderer>();
-        meshFilter = this.AddComponent<MeshFilter>();
+        meshRenderer = this.GetComponent<MeshRenderer>();
+        meshFilter = this.GetComponent<MeshFilter>();
         FrameCount = meshSequenceContainer.MeshSequence.Count;
 
         if (isPlayingAudio)
@@ -125,7 +125,7 @@ public class MeshSequencePlayer : MonoBehaviour
 
         meshFilter.mesh = meshSequenceContainer.MeshSequence[NextFrame];
 
-        meshRenderer.sharedMaterial = meshSequenceContainer.MaterialSequence[NextFrame];
+        //meshRenderer.sharedMaterial = meshSequenceContainer.MaterialSequence[NextFrame];
         
         CurrentFrame = NextFrame;
     }
