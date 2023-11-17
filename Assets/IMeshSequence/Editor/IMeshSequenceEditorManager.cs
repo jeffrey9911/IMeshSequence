@@ -113,15 +113,15 @@ public class IMeshSequencePlayerEditorManager : Editor
 
 public class HierarchyContextMenu : Editor
 {
-    [MenuItem("GameObject/Mesh Sequence Loader", false, 10)]
-    static void InstantiateSequenceLoader()
+    [MenuItem("GameObject/IMeshSequence Streamer", false, 10)]
+    static void InstantiateSequenceStreamer()
     {
-        string prefabPath = "Assets/IMeshSequence/Prefab/MeshSequence.prefab";
-        GameObject MeshSequenceLoaderPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+        GameObject meshSequenceStreamer = new GameObject("IMeshSequence Streamer");
+        meshSequenceStreamer.AddComponent<MeshSequenceStreamer>();
         
-        if (MeshSequenceLoaderPrefab != null)
+        if (meshSequenceStreamer != null)
         {
-            PrefabUtility.InstantiatePrefab(MeshSequenceLoaderPrefab);
+            PrefabUtility.InstantiatePrefab(meshSequenceStreamer);
         }
     }
 }

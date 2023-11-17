@@ -33,13 +33,6 @@ public class MeshSequenceStreamer : MonoBehaviour
 
     OBJLoader OBJLoader = new OBJLoader();
 
-    private void Start()
-    {
-
-        //Debug.Log(Application.dataPath);
-        //Debug.Log("D:\\_FILE_BROWSER_\\_FILE_STATION_\\230803-StudyVR\\Patrick\\talk1-full\\iMS-Patrick-talk-full-01\\QLOW\\talk1full_QLOW_0000000.obj");
-    }
-
     private void Update()
     {
         if (isPlaying)
@@ -71,15 +64,18 @@ public class MeshSequenceStreamer : MonoBehaviour
 
     public void StartLoad()
     {
-        LoadMeshSequenceInfo();
+        LoadMeshSequenceInfo("", SampleProgressCallback);
+    }
+
+    private void SampleProgressCallback(float progress)
+    {
+        Debug.Log($"Progress: {Math.Round(progress, 2)}%");
     }
 
     
-    public void LoadMeshSequenceInfo(string folderPath = "", Action<float> ProgressCallback = null)
+    private void LoadMeshSequenceInfo(string folderPath = "", Action<float> ProgressCallback = null)
     {
         if (folderPath == "") { folderPath = MeshSequencePath; }
-
-        Debug.Log(folderPath);
 
         if (Directory.Exists(folderPath))
         {
@@ -95,7 +91,8 @@ public class MeshSequenceStreamer : MonoBehaviour
                 {
                     PlayerAudioSource = this.gameObject.AddComponent<AudioSource>();
 
-                    StartCoroutine(LoadAudio(AudioPath[0]));
+                    
+                    StartCoroutine(LoadAudio(AudioPath[0].Replace("\\", "/")));
                 }
 
                 meshSequenceContainer = this.gameObject.AddComponent<MeshSequenceContainer>();
@@ -120,9 +117,12 @@ public class MeshSequenceStreamer : MonoBehaviour
 
     public IEnumerator LoadAudio(string filePath)
     {
+        /* // Get Audio Clip from UnityWebRequest
         UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(filePath, AudioType.WAV);
 
         yield return www.SendWebRequest();
+
+        Debug.Log(filePath);
 
         if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
         {
@@ -147,6 +147,28 @@ public class MeshSequenceStreamer : MonoBehaviour
         }
 
         www.Dispose();
+        */
+
+
+        string url = "file://" + filePath;
+
+        using (WWW www = new WWW(url))
+        {
+            yield return www;
+
+            if(www.error == null)
+            {
+                PlayerAudioSource.clip = www.GetAudioClip();
+                Debug.Log("Audio clip loaded successfully.");
+                
+                PlayerAudioSource.loop = true;
+                isPlayingAudio = true;
+            }
+            else
+            {
+                Debug.LogError("Error loading audio file: " + www.error);
+            }
+        }
     }
 
 
@@ -164,6 +186,7 @@ public class MeshSequenceStreamer : MonoBehaviour
         }
 
         isLoaded = true;
+        Debug.Log("Mesh Sequence Loaded");
     }
 
 
